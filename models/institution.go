@@ -22,9 +22,15 @@ type Institution struct {
 	// isn't final until every document is approved"). Institution-configurable
 	// from Opciones → General; empty means the frontend falls back to its
 	// own default copy.
-	RequirementsNoticeHTML string    `gorm:"column:requirements_notice_html;type:text" json:"requirements_notice_html"`
-	CreatedAt              time.Time `gorm:"column:created_at" json:"created_at"`
-	UpdatedAt              time.Time `gorm:"column:updated_at" json:"updated_at"`
+	RequirementsNoticeHTML string `gorm:"column:requirements_notice_html;type:text" json:"requirements_notice_html"`
+	// PrimaryColor/SecondaryColor are the institution's brand colors (hex,
+	// e.g. "#7c3aed"), set from nexed-admin and applied across
+	// nexed-customer-frontend (theme, sidebar, buttons). Empty means "use
+	// the platform default" — that fallback lives client-side, not here.
+	PrimaryColor   string    `gorm:"column:primary_color;size:7" json:"primary_color"`
+	SecondaryColor string    `gorm:"column:secondary_color;size:7" json:"secondary_color"`
+	CreatedAt      time.Time `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt      time.Time `gorm:"column:updated_at" json:"updated_at"`
 }
 
 func (Institution) TableName() string {
