@@ -27,8 +27,14 @@ type Institution struct {
 	// e.g. "#7c3aed"), set from nexed-admin and applied across
 	// nexed-customer-frontend (theme, sidebar, buttons). Empty means "use
 	// the platform default" — that fallback lives client-side, not here.
-	PrimaryColor   string    `gorm:"column:primary_color;size:7" json:"primary_color"`
-	SecondaryColor string    `gorm:"column:secondary_color;size:7" json:"secondary_color"`
+	PrimaryColor   string `gorm:"column:primary_color;size:7" json:"primary_color"`
+	SecondaryColor string `gorm:"column:secondary_color;size:7" json:"secondary_color"`
+	// LetterheadPath is the institution's single letterhead image, stamped
+	// as a repeating header on every page of a generated requirement
+	// template document (see RequirementTemplate) — one per institution,
+	// reused across all of its templates. Empty means templates render
+	// without a header band.
+	LetterheadPath string    `gorm:"column:letterhead_path;size:255" json:"letterhead_path"`
 	CreatedAt      time.Time `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt      time.Time `gorm:"column:updated_at" json:"updated_at"`
 }
