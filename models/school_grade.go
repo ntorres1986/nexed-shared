@@ -2,19 +2,24 @@ package models
 
 import "time"
 
-// SchoolGrade is one grade/level a school offers (e.g. "Noveno"), with
-// the tuition amount charged when a Student assigned to it is enrolled
-// for a school year — see EnrollmentService.Register, which looks this
-// value up instead of generating a placeholder amount. Institution-scoped
-// like Role/Requirement: each school manages its own catalog and pricing.
+// SchoolGrade is one grade/level a school offers (e.g. "Noveno"), with the
+// monthly tuition (mensualidad) amount charged to a Student assigned to
+// it — see StudentBillingPlan, which defaults a student's monthly amount
+// from this value at plan-creation time (editable per student from
+// there). Unlike this per-grade monthly amount, the matrícula
+// (enrollment) fee is a single fixed amount for the whole institution —
+// see Institution.EnrollmentFeeAmount. Institution-scoped like
+// Role/Requirement: each school manages its own catalog and pricing.
 type SchoolGrade struct {
 	ID            uint         `gorm:"primaryKey" json:"id"`
 	InstitutionID uint         `gorm:"column:institution_id;not null;index;uniqueIndex:idx_school_grades_institution_name" json:"institution_id"`
 	Institution   *Institution `gorm:"foreignKey:InstitutionID" json:"-"`
 	Name          string       `gorm:"column:name;size:100;not null;uniqueIndex:idx_school_grades_institution_name" json:"name"`
-	// TuitionValue is whole Colombian pesos (no subunit in practice),
-	// matching Enrollment.Amount's own convention.
-	TuitionValue int64 `gorm:"column:tuition_value;not null" json:"tuition_value"`
+	// MonthlyFeeAmount is whole Colombian pesos (no subunit in practice) —
+	// column kept as the pre-existing "tuition_value" name is NOT reused
+	// here; see database.Migrate's one-time RENAME COLUMN for how existing
+	// data survives the rename from the old TuitionValue field.
+	MonthlyFeeAmount int64 `gorm:"column:monthly_fee_amount;not null" json:"monthly_fee_amount"`
 	// IsActive gates whether the grade can be newly assigned to a student
 	// (see SchoolGradeRepository.ListAll, used by the "assign grade"
 	// picker) — disabling one never touches students already assigned to

@@ -12,16 +12,20 @@ const (
 )
 
 // PaymentTransaction is one payment attempt against PlacetoPay/AvalPay
-// Checkout for an Enrollment. A parent can retry after a rejected/failed
-// attempt (each retry needs its own never-reused Reference — see the WC
-// certification guide's field-validation section), so an Enrollment can
-// have several of these; the most recent one is the "current" attempt.
-// Enrollment.Status flips to PAID the moment any one of them reaches
-// APPROVED — see PaymentService.
+// Checkout for either an Enrollment (matrícula) or a MonthlyDue (cuota
+// mensual) — exactly one of EnrollmentID/MonthlyDueID is set, validated in
+// PaymentService, not the database. A parent can retry after a
+// rejected/failed attempt (each retry needs its own never-reused Reference
+// — see the WC certification guide's field-validation section), so the
+// target can have several of these; the most recent one is the "current"
+// attempt. The target's Status flips to PAID the moment any one of them
+// reaches APPROVED — see PaymentService.
 type PaymentTransaction struct {
 	ID           uint        `gorm:"primaryKey" json:"id"`
-	EnrollmentID uint        `gorm:"column:enrollment_id;not null;index" json:"enrollment_id"`
+	EnrollmentID *uint       `gorm:"column:enrollment_id;index" json:"enrollment_id,omitempty"`
 	Enrollment   *Enrollment `gorm:"foreignKey:EnrollmentID" json:"-"`
+	MonthlyDueID *uint       `gorm:"column:monthly_due_id;index" json:"monthly_due_id,omitempty"`
+	MonthlyDue   *MonthlyDue `gorm:"foreignKey:MonthlyDueID" json:"-"`
 
 	// Reference is the unique-per-attempt alphanumeric code (max 32 chars)
 	// sent to PlacetoPay as payment.reference — never reused across

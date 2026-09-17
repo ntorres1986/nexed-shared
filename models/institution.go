@@ -34,9 +34,17 @@ type Institution struct {
 	// template document (see RequirementTemplate) — one per institution,
 	// reused across all of its templates. Empty means templates render
 	// without a header band.
-	LetterheadPath string    `gorm:"column:letterhead_path;size:255" json:"letterhead_path"`
-	CreatedAt      time.Time `gorm:"column:created_at" json:"created_at"`
-	UpdatedAt      time.Time `gorm:"column:updated_at" json:"updated_at"`
+	LetterheadPath string `gorm:"column:letterhead_path;size:255" json:"letterhead_path"`
+	// EnrollmentFeeAmount is the matrícula fee — a single fixed amount for
+	// every student regardless of grade (unlike SchoolGrade.MonthlyFeeAmount,
+	// which does vary by grade). EnrollmentFeeDueDate is copied onto each
+	// Enrollment at registration time rather than read live, so a later
+	// change here doesn't retroactively alter what an already-registered
+	// family was told — see Enrollment.DueDate.
+	EnrollmentFeeAmount  int64      `gorm:"column:enrollment_fee_amount;not null" json:"enrollment_fee_amount"`
+	EnrollmentFeeDueDate *time.Time `gorm:"column:enrollment_fee_due_date" json:"enrollment_fee_due_date,omitempty"`
+	CreatedAt            time.Time  `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt            time.Time  `gorm:"column:updated_at" json:"updated_at"`
 }
 
 func (Institution) TableName() string {
