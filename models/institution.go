@@ -47,9 +47,17 @@ type Institution struct {
 	// month including February) that every MonthlyDue installment falls
 	// due on — see StudentBillingPlanService's due-date generation, which
 	// reads this instead of a hardcoded day. Defaults to 5.
-	MonthlyDueDay int       `gorm:"column:monthly_due_day;not null;default:5" json:"monthly_due_day"`
-	CreatedAt     time.Time `gorm:"column:created_at" json:"created_at"`
-	UpdatedAt     time.Time `gorm:"column:updated_at" json:"updated_at"`
+	MonthlyDueDay int `gorm:"column:monthly_due_day;not null;default:5" json:"monthly_due_day"`
+	// CurrentSchoolYear is the year matrícula/mensualidad billing is
+	// currently being done for — the frontend uses this instead of
+	// guessing from today's calendar date (e.g. "current year + 1"),
+	// which drifts out of sync with the institution's own enrollment
+	// calendar. 0 means unset; callers fall back to a computed default
+	// (see InstitutionService) until an admin configures it explicitly
+	// from Opciones → General.
+	CurrentSchoolYear int       `gorm:"column:current_school_year;not null;default:0" json:"current_school_year"`
+	CreatedAt         time.Time `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt         time.Time `gorm:"column:updated_at" json:"updated_at"`
 }
 
 func (Institution) TableName() string {
