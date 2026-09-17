@@ -28,6 +28,15 @@ type Enrollment struct {
 	Amount  int64            `gorm:"column:amount;not null" json:"amount"`
 	DueDate *time.Time       `gorm:"column:due_date" json:"due_date,omitempty"`
 	Status  EnrollmentStatus `gorm:"column:status;size:20;not null" json:"status"`
+	// ReportedAt is set once a reviewer (ADMINISTRATIVO or a role granted
+	// enrollments.approve_requirements) manually confirms this student as
+	// formally matriculado from the grade requirement-review grid — nil
+	// means not yet confirmed. Independent of Status, which is only about
+	// the matrícula fee payment: a fully-paid enrollment isn't
+	// automatically "reported", and a reviewer may report one before every
+	// document is approved. Setting it also emails the parent — see
+	// RequirementReviewService.MarkReported.
+	ReportedAt *time.Time `gorm:"column:reported_at" json:"reported_at,omitempty"`
 
 	CreatedAt time.Time `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt time.Time `gorm:"column:updated_at" json:"updated_at"`
