@@ -43,8 +43,13 @@ type Institution struct {
 	// family was told — see Enrollment.DueDate.
 	EnrollmentFeeAmount  int64      `gorm:"column:enrollment_fee_amount;not null" json:"enrollment_fee_amount"`
 	EnrollmentFeeDueDate *time.Time `gorm:"column:enrollment_fee_due_date" json:"enrollment_fee_due_date,omitempty"`
-	CreatedAt            time.Time  `gorm:"column:created_at" json:"created_at"`
-	UpdatedAt            time.Time  `gorm:"column:updated_at" json:"updated_at"`
+	// MonthlyDueDay is the day of the month (1-28, to stay valid in every
+	// month including February) that every MonthlyDue installment falls
+	// due on — see StudentBillingPlanService's due-date generation, which
+	// reads this instead of a hardcoded day. Defaults to 5.
+	MonthlyDueDay int       `gorm:"column:monthly_due_day;not null;default:5" json:"monthly_due_day"`
+	CreatedAt     time.Time `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt     time.Time `gorm:"column:updated_at" json:"updated_at"`
 }
 
 func (Institution) TableName() string {
