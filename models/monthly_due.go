@@ -35,6 +35,12 @@ type MonthlyDue struct {
 	Description string           `gorm:"column:description;size:255;not null" json:"description"`
 	Amount      int64            `gorm:"column:amount;not null" json:"amount"`
 	Status      MonthlyDueStatus `gorm:"column:status;size:20;not null;index" json:"status"`
+	// DueDateOverridden is true once an admin manually edited this
+	// installment's DueDate (see StudentBillingPlanService.UpdateDueDate) —
+	// a later StudentBillingPlan save then leaves DueDate alone for this
+	// row instead of recomputing it, so the manual override survives
+	// unrelated plan edits (price, other installments, other charges).
+	DueDateOverridden bool `gorm:"column:due_date_overridden;not null;default:false" json:"due_date_overridden"`
 
 	CreatedAt time.Time `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt time.Time `gorm:"column:updated_at" json:"updated_at"`
