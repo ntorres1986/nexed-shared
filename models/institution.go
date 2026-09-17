@@ -29,11 +29,11 @@ type Institution struct {
 	// the platform default" — that fallback lives client-side, not here.
 	PrimaryColor   string `gorm:"column:primary_color;size:7" json:"primary_color"`
 	SecondaryColor string `gorm:"column:secondary_color;size:7" json:"secondary_color"`
-	// LetterheadPath is the institution's single letterhead image, stamped
-	// as a repeating header on every page of a generated requirement
-	// template document (see RequirementTemplate) — one per institution,
-	// reused across all of its templates. Empty means templates render
-	// without a header band.
+	// LetterheadPath is the institution's single letterhead PDF, used as
+	// the background/base layer every generated requirement template
+	// document (see RequirementTemplate) is rendered on top of — one per
+	// institution, reused across all of its templates. Empty means
+	// templates render without a letterhead.
 	LetterheadPath string `gorm:"column:letterhead_path;size:255" json:"letterhead_path"`
 	// EnrollmentFeeAmount is the matrícula fee — a single fixed amount for
 	// every student regardless of grade (unlike SchoolGrade.MonthlyFeeAmount,
