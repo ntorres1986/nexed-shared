@@ -31,7 +31,12 @@ func (StudentBillingPlan) TableName() string {
 }
 
 // StudentBillingCharge is one ChargeType a student's billing plan opted
-// into, with its own (possibly overridden) monthly Amount.
+// into, with its own (possibly overridden) monthly Amount and its own
+// installment schedule — independent from the plan's base
+// StudentBillingPlan.InstallmentCount, since an additional charge (e.g.
+// "Transporte") may be a one-time fee (InstallmentCount 1) or span a
+// different number of months than the mensualidad, starting in a
+// different month too.
 type StudentBillingCharge struct {
 	ID            uint        `gorm:"primaryKey" json:"id"`
 	BillingPlanID uint        `gorm:"column:billing_plan_id;not null;index;uniqueIndex:idx_billing_charge_plan_type" json:"billing_plan_id"`
@@ -40,6 +45,13 @@ type StudentBillingCharge struct {
 	// Amount is whole Colombian pesos — defaults from
 	// ChargeType.DefaultAmount when added, editable per student.
 	Amount int64 `gorm:"column:amount;not null" json:"amount"`
+	// InstallmentCount is this charge's own number of cuotas — 1 for a
+	// single one-off charge, or however many months it recurs for.
+	InstallmentCount int `gorm:"column:installment_count;not null;default:1" json:"installment_count"`
+	// StartMonth (1-12) is the calendar month the charge's first
+	// installment falls due in; subsequent installments follow one per
+	// month from there (same day-of-month as Institution.MonthlyDueDay).
+	StartMonth int `gorm:"column:start_month;not null;default:2" json:"start_month"`
 }
 
 func (StudentBillingCharge) TableName() string {
