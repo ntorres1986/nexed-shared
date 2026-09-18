@@ -43,6 +43,11 @@ type User struct {
 	Phone          string        `gorm:"column:phone;size:30" json:"phone,omitempty"`
 	Address        string        `gorm:"column:address;size:255" json:"address,omitempty"`
 
+	// AvatarURL is either a path under /uploads (a photo the user uploaded,
+	// stored via FileStorage) or an external URL (a preset avatar picked
+	// from a free avatar-generation service). Empty means "show initials".
+	AvatarURL string `gorm:"column:avatar_url;size:500" json:"avatar_url,omitempty"`
+
 	CreatedAt time.Time `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt time.Time `gorm:"column:updated_at" json:"updated_at"`
 }
