@@ -31,6 +31,18 @@ type User struct {
 	// follow-up phase, per project scope.
 	MustChangePassword bool `gorm:"column:must_change_password;not null" json:"must_change_password"`
 
+	// DocumentTypeID/DocumentNumber/Phone/Address are meaningful for a
+	// PADRE account (captured when a parent's own contact/identity info is
+	// needed, e.g. the "Información padre" card on a student's payment
+	// history) — left empty for DOCENTE/ADMINISTRATIVO/SUPER_ADMIN, which
+	// the frontend enforces by only showing these fields when the selected
+	// role is PADRE.
+	DocumentTypeID *uint         `gorm:"column:document_type_id;index" json:"document_type_id,omitempty"`
+	DocumentType   *DocumentType `gorm:"foreignKey:DocumentTypeID" json:"document_type,omitempty"`
+	DocumentNumber string        `gorm:"column:document_number;size:50" json:"document_number,omitempty"`
+	Phone          string        `gorm:"column:phone;size:30" json:"phone,omitempty"`
+	Address        string        `gorm:"column:address;size:255" json:"address,omitempty"`
+
 	CreatedAt time.Time `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt time.Time `gorm:"column:updated_at" json:"updated_at"`
 }
